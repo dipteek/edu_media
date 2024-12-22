@@ -1,3 +1,4 @@
+import 'package:edu_media/auth/auth_screen.dart';
 import 'package:edu_media/auth/register_page.dart';
 import 'package:edu_media/test.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: RegisterPage(),
+      home: AuthScreen(),
     );
   }
 }
