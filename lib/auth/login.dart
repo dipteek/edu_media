@@ -44,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
         // Save the token to SharedPreferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('access_token', data['data']['access_token']);
+        prefs.setString('user_id', data['data']['user_id']);
 
         // Navigate to the homepage/dashboard
         Navigator.pushReplacement(

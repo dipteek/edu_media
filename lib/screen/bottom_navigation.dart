@@ -1,4 +1,7 @@
+import 'package:edu_media/screen/home_screen.dart';
+import 'package:edu_media/screen/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
@@ -36,6 +39,26 @@ class _BottomNavigationState extends State<BottomNavigation> {
         setState(() {
           _selectedIndex = index; // Update the selected index
         });
+        switch (index) {
+          case 0:
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeScreen(),
+                ));
+            break;
+          case 1:
+            profilePage();
+            break;
+          default:
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ),
+              (route) => false,
+            );
+        }
       },
       child: Icon(
         icon,
@@ -45,5 +68,22 @@ class _BottomNavigationState extends State<BottomNavigation> {
         size: 30,
       ),
     );
+  }
+
+  void profilePage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt('userId');
+    if (userId != null) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(userId: userId),
+        ),
+        (route) => false,
+      );
+    } else {
+      // Handle the case where userId is not available
+      print("User not logged in");
+    }
   }
 }
