@@ -72,7 +72,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   void profilePage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? userId = prefs.getInt('userId');
+    int? userId = prefs.getInt('user_id');
     if (userId != null) {
       Navigator.pushAndRemoveUntil(
         context,

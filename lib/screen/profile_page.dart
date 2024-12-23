@@ -1,8 +1,14 @@
+import 'package:edu_media/auth/auth_screen.dart';
+import 'package:edu_media/auth/login.dart';
+import 'package:edu_media/main.dart';
+import 'package:edu_media/screen/bottom_navigation.dart';
+import 'package:edu_media/screen/edit_profile_page.dart';
 import 'package:edu_media/setting/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   final int userId;
@@ -48,6 +54,13 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(userData?['name'] ?? 'Profile'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                logout();
+              },
+              icon: Icon(Icons.logout_rounded))
+        ],
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
@@ -63,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         CircleAvatar(
                           radius: 40,
                           backgroundImage: CachedNetworkImageProvider(
-                            userData?['profile_picture'] ??
+                            urlImg + userData?['profile_picture'] ??
                                 'https://via.placeholder.com/150',
                           ),
                         ),
@@ -94,6 +107,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
 
                   Divider(),
+                  ElevatedButton(
+                      onPressed: () {
+                        editProfile();
+                      },
+                      child: Text("Edit Profile")),
 
                   // Posts Grid
                   GridView.builder(
@@ -107,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     itemBuilder: (context, index) {
                       return CachedNetworkImage(
-                        imageUrl: userPosts?[index]['image'] ??
+                        imageUrl: urlImg + userPosts?[index]['image'] ??
                             'https://via.placeholder.com/150',
                         fit: BoxFit.cover,
                       );
@@ -116,6 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 
@@ -128,6 +147,41 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         Text(label),
       ],
+    );
+  }
+
+  void editProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt("user_id");
+    if (userId != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditProfilePage(userId: userId),
+          ));
+      print("work");
+    } else {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ));
+      print("null");
+    }
+  }
+
+  void logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('access_token');
+    //prefs.setString('access_token', data['data']['access_token']);
+    prefs.remove('user_id');
+    print("logout done");
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AuthScreen(),
+      ),
+      (route) => false,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:edu_media/auth/register_page.dart';
 import 'package:edu_media/loading.dart';
 import 'package:edu_media/screen/home_screen.dart';
+import 'package:edu_media/setting/convert.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -26,48 +27,68 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    final response = await http.post(
-      Uri.parse('http://192.168.0.100:8000/api/login'),
-      body: {
-        'email': _emailController.text,
-        'password': _passwordController.text,
-      },
-    );
+    final String url = '${urlM}login'; // Make sure urlM is defined
 
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Accept': 'application/json'},
+        body: {
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data['success'] == true) {
-        // Save the token to SharedPreferences
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['data']['access_token'];
+
+        // Save token to shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('access_token', data['data']['access_token']);
-        prefs.setString('user_id', data['data']['user_id']);
+        await prefs.setString('access_token', token);
+        prefs.setInt('user_id', data['data']['user']['id']);
 
-        // Navigate to the homepage/dashboard
+        // Ensure SnackBar is shown after the current build frame
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Login successful!')),
+          );
+        });
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'])),
-        );
+        final errorData = jsonDecode(response.body);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorData['message'] ?? 'Login failed')),
+          );
+        });
       }
-    } else {
-      // Handle server error
-      final error = jsonDecode(response.body);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error['message'] ?? 'An error occurred')),
-      );
+    } catch (e) {
+      // Ensure SnackBar is shown in case of an error
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('An error occurred: $e')),
+          );
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return _isLoading
         ? ScreenLoading()
         : Scaffold(
@@ -128,7 +149,11 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             const SizedBox(height: 30),
                             ElevatedButton(
-                              onPressed: _login,
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _login();
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 15),
@@ -143,16 +168,17 @@ class _LoginPageState extends State<LoginPage> {
                               child: InkWell(
                                 onTap: () {
                                   Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => RegisterPage(),
-                                      ));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RegisterPage(),
+                                    ),
+                                  );
                                 },
                                 child: RichText(
                                   text: const TextSpan(
                                     text: 'Already have an account?',
                                     style: TextStyle(color: Colors.black),
-                                    children: const <TextSpan>[
+                                    children: <TextSpan>[
                                       TextSpan(
                                           text: '  Sign Up',
                                           style: TextStyle(
