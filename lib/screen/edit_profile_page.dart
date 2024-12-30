@@ -86,19 +86,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
       final request = http.MultipartRequest('PUT', Uri.parse(url));
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('access_token');
+      print(token);
 
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['name'] = _nameController.text;
-      request.fields['username'] = _usernameController.text;
-      request.fields['bio'] = _bioController.text;
-      request.fields['gender'] = _gender ?? '';
+      // request.fields['username'] = _usernameController.text;
+      //request.fields['bio'] = _bioController.text;
+      //request.fields['gender'] = _gender ?? '';
 
-      if (_profileImage != null) {
+      /*if (_profileImage != null) {
         request.files.add(await http.MultipartFile.fromPath(
           'profile_image',
           _profileImage!.path,
         ));
-      }
+      }*/
 
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
@@ -116,6 +117,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Navigator.pop(context); // Go back to the previous page
         }
       } else {
+        print(responseBody.toString());
         final errorData = jsonDecode(responseBody);
 
         if (errorData['errors'] != null &&
