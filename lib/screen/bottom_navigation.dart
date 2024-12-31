@@ -36,6 +36,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               iconOFNavigation(Icons.home_outlined, 0),
+              iconOFNavigation(Icons.add_box_outlined, 2),
               iconOFNavigation(Icons.person_outline, 1),
             ],
           )
