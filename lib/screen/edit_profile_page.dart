@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -26,6 +27,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool isLoading = true;
   String img = '';
   String err = '';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -55,8 +57,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         headers: {'Authorization': 'Bearer $token'},
       );
 
+      print(response.body);
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body)['user'];
+        //final data = jsonDecode(response.body);
         setState(() {
           _nameController.text = data['name'] ?? '';
           _usernameController.text = data['username'] ?? '';
@@ -79,18 +84,45 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _updateProfile() async {
-    final url = '${urlM}profile-update/${widget.userId}';
+    //final url = '${urlM}profile-update/${widget.userId}';
+    final url = Uri.parse('${urlM}profile-update/${widget.userId}');
     try {
-      print('Request URL: $url');
+      //print('Request URL: $url');
 
-      final request = http.MultipartRequest('PUT', Uri.parse(url));
+      //final request = http.MultipartRequest('PUT', Uri.parse(url));
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('access_token');
       print(token);
 
-      request.headers['Authorization'] = 'Bearer $token';
-      request.fields['name'] = _nameController.text;
-      // request.fields['username'] = _usernameController.text;
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      };
+
+      //request.headers['Authorization'] = 'Bearer $token';
+      //request.fields['name'] = _nameController.text;
+      //request.fields['username'] = _usernameController.text;
+
+      String name = _nameController.text;
+      String username = _usernameController.text;
+
+      final body = jsonEncode({
+        'name': _nameController.text,
+        'username': _usernameController.text,
+        'bio': _bioController.text,
+        'gender': _gender ?? '',
+      });
+
+      /*final request = http.MultipartRequest('PUT', url)
+        ..headers.addAll(headers)
+        ..fields['name'] = 'John Doe'
+        ..fields['username'] = _usernameController.text;*/
+
+      /* 
+        ..fields['bio'] = _bioController.text
+        ..fields['gender'] = _gender ?? '' */
+
       //request.fields['bio'] = _bioController.text;
       //request.fields['gender'] = _gender ?? '';
 
@@ -101,14 +133,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ));
       }*/
 
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
+      /* if (_profileImage != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'profile_image',
+          _profileImage!.path,
+        ));
+      }*/
 
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: $responseBody');
+      // print('Request Fields: ${request.fields}');
+
+      //final streamedResponse = await request.send();
+
+      // Convert the streamed response into a standard HTTP response
+      // final response = await http.Response.fromStream(streamedResponse);
+      final response = await http.put(url, headers: headers, body: body);
+      //final response = await request.send();
+      //final responseBody = await response.stream.bytesToString();
+      // print(request);
+      print('Response Status Code: ${response}');
+      //print('Response Body: $responseBody');
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(responseBody);
+        final data = jsonDecode(response.body);
 
         if (data['success']) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -117,8 +163,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Navigator.pop(context); // Go back to the previous page
         }
       } else {
-        print(responseBody.toString());
-        final errorData = jsonDecode(responseBody);
+        print(response.body.toString());
+        final errorData = jsonDecode(response.body);
 
         if (errorData['errors'] != null &&
             errorData['errors']['username'] != null) {
@@ -139,7 +185,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Future<void> _pickImage() async {
+  /* Future<void> _pickImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -147,6 +193,131 @@ class _EditProfilePageState extends State<EditProfilePage> {
         _profileImage = File(pickedFile.path);
       });
     }
+  }*/
+
+  Future<void> _pickImage() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1000, // Optimize image size
+        maxHeight: 1000,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _profileImage = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      _showError('Failed to pick image: $e');
+    }
+  }
+
+  Future<void> makeRequest() async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Construct URL
+      final url = Uri.parse('${urlM}profile-update/${widget.userId}');
+
+      // Get token
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('access_token');
+
+      if (token == null) {
+        throw Exception('Authentication token not found');
+      }
+
+      // Prepare headers
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      };
+
+      // Create multipart request
+      final request = http.MultipartRequest('POST', url)
+        ..headers.addAll(headers)
+        ..fields['name'] = _nameController.text
+        ..fields['username'] = _usernameController.text
+        ..fields['bio'] = _bioController.text
+        ..fields['gender'] = _gender ?? '';
+
+      // Add image if selected
+      if (_profileImage != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'profile_image',
+          _profileImage!.path,
+        ));
+      }
+
+      // Send request
+      final streamedResponse = await request.send().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw TimeoutException('Request timed out');
+        },
+      );
+
+      // Get response
+      final response = await http.Response.fromStream(streamedResponse);
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success']) {
+          _showSuccess('Profile updated successfully');
+          Navigator.pop(context, true); // Optionally navigate back
+        } else {
+          throw Exception(data['message'] ?? 'Failed to update profile');
+        }
+      } else {
+        final errorMessage = _parseErrorMessage(response);
+        _showError(errorMessage);
+      }
+    } catch (e) {
+      _showError('Error updating profile: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  String _parseErrorMessage(http.Response response) {
+    try {
+      final body = jsonDecode(response.body);
+      return body['message'] ?? body['error'] ?? 'Unknown error occurred';
+    } catch (e) {
+      return 'Error ${response.statusCode}: ${response.reasonPhrase}';
+    }
+  }
+
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _showSuccess(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -225,7 +396,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     SizedBox(height: 20),
                     Text(err),
                     ElevatedButton(
-                      onPressed: _updateProfile,
+                      onPressed: /*_updateProfile*/ makeRequest,
                       child: Text('Save Changes'),
                     ),
                   ],

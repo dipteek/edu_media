@@ -4,14 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+  final int selectIn;
+  const BottomNavigation({super.key, required this.selectIn});
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  int _selectedIndex = 0; // To track the currently selected icon
+  int _selectedIndex = 0;
+  Widget _currentScreen = HomeScreen();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      _selectedIndex = widget.selectIn;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +44,45 @@ class _BottomNavigationState extends State<BottomNavigation> {
     );
   }
 
+  /*Widget iconOFNavigation(IconData icon, int index) {
+    return GestureDetector(
+      onTap: () async {
+        if (index == 1) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          int? userId = prefs.getInt('user_id');
+          if (userId == null) {
+            print("User not logged in");
+            return;
+          }
+          setState(() {
+            _selectedIndex = index;
+            _currentScreen = ProfilePage(userId: userId);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => _currentScreen,
+              ),
+              (route) => false,
+            );
+          });
+        } else {
+          setState(() {
+            _selectedIndex = index;
+            _currentScreen = HomeScreen();
+          });
+        }
+      },
+      child: Icon(
+        icon,
+        color: _selectedIndex == index
+            ? Color.fromARGB(255, 61, 83, 161)
+            : Colors.black,
+        size: 30,
+      ),
+    );
+  }*/
   Widget iconOFNavigation(IconData icon, int index) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         setState(() {
           _selectedIndex = index; // Update the selected index
@@ -42,10 +90,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
         switch (index) {
           case 0:
             Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomeScreen(),
-                ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ),
+            );
             break;
           case 1:
             profilePage();
@@ -63,8 +112,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
       child: Icon(
         icon,
         color: _selectedIndex == index
-            ? Color.fromARGB(255, 61, 83, 161)
-            : Colors.black,
+            ? Color.fromARGB(255, 61, 83, 161) // Blue for selected
+            : Colors.black, // Black for others
         size: 30,
       ),
     );
