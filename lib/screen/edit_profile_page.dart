@@ -212,6 +212,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     } catch (e) {
       _showError('Failed to pick image: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -258,7 +264,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       // Send request
       final streamedResponse = await request.send().timeout(
-        const Duration(seconds: 30),
+        const Duration(seconds: 40),
         onTimeout: () {
           throw TimeoutException('Request timed out');
         },

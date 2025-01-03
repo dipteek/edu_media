@@ -42,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final token = data['data']['access_token'];
+        print(token);
 
         // Save token to shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();

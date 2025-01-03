@@ -1,3 +1,4 @@
+import 'package:edu_media/screen/create_post_page.dart';
 import 'package:edu_media/screen/home_screen.dart';
 import 'package:edu_media/screen/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -100,6 +101,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
           case 1:
             profilePage();
             break;
+          case 2:
+            createPage();
+            break;
           default:
             Navigator.pushAndRemoveUntil(
               context,
@@ -130,6 +134,22 @@ class _BottomNavigationState extends State<BottomNavigation> {
           builder: (context) => ProfilePage(userId: userId),
         ),
         (route) => false,
+      );
+    } else {
+      // Handle the case where userId is not available
+      print("User not logged in");
+    }
+  }
+
+  void createPage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt('user_id');
+    if (userId != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreatePostPage(userId: userId),
+        ),
       );
     } else {
       // Handle the case where userId is not available
