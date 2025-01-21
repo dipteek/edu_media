@@ -240,13 +240,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         throw Exception('Authentication token not found');
       }
 
-      // Prepare headers
       final headers = {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
       };
 
-      // Create multipart request
       final request = http.MultipartRequest('POST', url)
         ..headers.addAll(headers)
         ..fields['name'] = _nameController.text

@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 child: RichText(
                                   text: const TextSpan(
-                                    text: 'Already have an account?',
+                                    text: 'Do Want to Create Account?',
                                     style: TextStyle(color: Colors.black),
                                     children: <TextSpan>[
                                       TextSpan(

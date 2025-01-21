@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -24,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _ageController = TextEditingController();
+  final _userController = TextEditingController();
   String _educationType = 'Student';
   bool isLoading = false;
 
@@ -73,15 +75,30 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoading = true;
     });
     if (_formKey.currentState!.validate()) {
-      var request = http.MultipartRequest(
+      /*var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://192.168.0.106:8000/api/register'),
+        Uri.parse('http://192.168.113.184:8000/api/register'),
       );
+
       request.fields['name'] = _nameController.text;
+      request.fields['username'] = _userController.text;
       request.fields['email'] = _emailController.text;
       request.fields['password'] = _passwordController.text;
       request.fields['age'] = _ageController.text;
-      request.fields['education_type'] = _educationType;
+      request.fields['education_type'] = _educationType;*/
+      final url = Uri.parse('http://192.168.113.184:8000/api/register');
+      final headers = {
+        'Accept': 'application/json',
+      };
+
+      final request = http.MultipartRequest('POST', url)
+        ..headers.addAll(headers)
+        ..fields['name'] = _nameController.text
+        ..fields['email'] = _emailController.text
+        ..fields['username'] = _userController.text
+        ..fields['password'] = _passwordController.text
+        ..fields['age'] = _ageController.text
+        ..fields['education_type'] = _educationType;
 
       if (_imageFile != null) {
         request.files.add(await http.MultipartFile.fromPath(
@@ -90,7 +107,23 @@ class _RegisterPageState extends State<RegisterPage> {
         ));
       }
 
-      var response = await request.send();
+      final streamedResponse = await request.send().timeout(
+        const Duration(seconds: 40),
+        onTimeout: () {
+          throw TimeoutException('Request timed out');
+        },
+      );
+
+      // Get response
+      final response = await http.Response.fromStream(streamedResponse);
+
+      print(response.body);
+      print(response.statusCode);
+
+      //var response = await request.send();
+
+      print(response.statusCode);
+      print(response);
 
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -104,6 +137,9 @@ class _RegisterPageState extends State<RegisterPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration Failed')),
         );
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -173,6 +209,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               customField("Name", "Please enter your name",
                                   null, _nameController),
                               const SizedBox(height: 20),
+                              customField(
+                                  "username",
+                                  "Please enter your username",
+                                  null,
+                                  _userController),
+                              const SizedBox(height: 20),
                               customField("Email", "Please enter your email",
                                   TextInputType.emailAddress, _emailController),
                               const SizedBox(height: 20),
@@ -219,6 +261,33 @@ class _RegisterPageState extends State<RegisterPage> {
                                   'Register',
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.white),
+                                ),
+                              ),
+                              Center(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: RichText(
+                                    text: const TextSpan(
+                                      text: 'Already have an account?',
+                                      style: TextStyle(color: Colors.black),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: '  Sign in',
+                                            style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 61, 83, 161),
+                                              fontWeight: FontWeight.bold,
+                                            )),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
