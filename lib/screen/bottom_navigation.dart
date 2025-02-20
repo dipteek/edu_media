@@ -1,3 +1,5 @@
+import 'package:edu_media/screen/course/course_page.dart';
+import 'package:edu_media/screen/course/create_course_page.dart';
 import 'package:edu_media/screen/create_post_page.dart';
 import 'package:edu_media/screen/home_screen.dart';
 import 'package:edu_media/screen/profile_page.dart';
@@ -39,6 +41,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
               iconOFNavigation(Icons.home_outlined, 0),
               iconOFNavigation(Icons.add_box_outlined, 2),
               iconOFNavigation(Icons.person_outline, 1),
+              iconOFNavigation(Icons.article_rounded, 3),
             ],
           )
         ],
@@ -102,8 +105,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
             profilePage();
             break;
           case 2:
-            createPage();
+            showBottomSheet(context);
             break;
+          case 3:
+            coursePage();
           default:
             Navigator.pushAndRemoveUntil(
               context,
@@ -155,5 +160,68 @@ class _BottomNavigationState extends State<BottomNavigation> {
       // Handle the case where userId is not available
       print("User not logged in");
     }
+  }
+
+  void coursePage() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CoursePage(),
+      ),
+    );
+  }
+
+  Future<void> showBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize:
+                MainAxisSize.min, // Ensure the bottom sheet adjusts to content
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Align text to the start
+            children: [
+              InkWell(
+                onTap: () {
+                  createPage();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Create Post",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateCoursePage(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Create Course",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }

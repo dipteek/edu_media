@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:edu_media/auth/login.dart';
 import 'package:edu_media/loading.dart';
+import 'package:edu_media/setting/convert.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 //import 'package:image_picker/image_picker.dart';
@@ -86,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
       request.fields['password'] = _passwordController.text;
       request.fields['age'] = _ageController.text;
       request.fields['education_type'] = _educationType;*/
-      final url = Uri.parse('http://192.168.113.184:8000/api/register');
+      final url = Uri.parse(urlM + 'register');
       final headers = {
         'Accept': 'application/json',
       };
