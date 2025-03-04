@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class EditProfilePage extends StatefulWidget {
   final int userId;
 
-  const EditProfilePage({Key? key, required this.userId}) : super(key: key);
+  const EditProfilePage({super.key, required this.userId});
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
@@ -150,7 +150,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       //final response = await request.send();
       //final responseBody = await response.stream.bytesToString();
       // print(request);
-      print('Response Status Code: ${response}');
+      print('Response Status Code: $response');
       //print('Response Body: $responseBody');
 
       if (response.statusCode == 200) {
@@ -158,7 +158,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
         if (data['success']) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Profile updated successfully')),
+            const SnackBar(content: Text('Profile updated successfully')),
           );
           Navigator.pop(context); // Go back to the previous page
         }
@@ -169,11 +169,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (errorData['errors'] != null &&
             errorData['errors']['username'] != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Username is already taken')),
+            const SnackBar(content: Text('Username is already taken')),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to update profile')),
+            const SnackBar(content: Text('Failed to update profile')),
           );
         }
       }
@@ -328,10 +328,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: const Text('Edit Profile'),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -351,10 +351,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ,
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _nameController,
-                      decoration: InputDecoration(labelText: 'Name'),
+                      decoration: const InputDecoration(labelText: 'Name'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your name';
@@ -362,10 +362,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextFormField(
                       controller: _usernameController,
-                      decoration: InputDecoration(labelText: 'Username'),
+                      decoration: const InputDecoration(labelText: 'Username'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';
@@ -373,16 +373,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextFormField(
                       controller: _bioController,
-                      decoration: InputDecoration(labelText: 'Bio'),
+                      decoration: const InputDecoration(labelText: 'Bio'),
                       maxLines: 3,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
                       value: _gender,
-                      decoration: InputDecoration(labelText: 'Gender'),
+                      decoration: const InputDecoration(labelText: 'Gender'),
                       items: ['male', 'female', 'other']
                           .map((gender) => DropdownMenuItem(
                                 value: gender,
@@ -397,11 +397,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         });
                       },
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Text(err),
                     ElevatedButton(
                       onPressed: /*_updateProfile*/ makeRequest,
-                      child: Text('Save Changes'),
+                      child: const Text('Save Changes'),
                     ),
                   ],
                 ),

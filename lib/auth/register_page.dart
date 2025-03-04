@@ -87,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
       request.fields['password'] = _passwordController.text;
       request.fields['age'] = _ageController.text;
       request.fields['education_type'] = _educationType;*/
-      final url = Uri.parse(urlM + 'register');
+      final url = Uri.parse('${urlM}register');
       final headers = {
         'Accept': 'application/json',
       };
@@ -151,14 +151,14 @@ class _RegisterPageState extends State<RegisterPage> {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 61, 83, 161),
+        backgroundColor: const Color.fromARGB(255, 61, 83, 161),
         body: isLoading == true
-            ? ScreenLoading()
+            ? const ScreenLoading()
             : SingleChildScrollView(
                 child: Column(
                   children: [
                     Container(
-                        color: Color.fromARGB(255, 61, 83, 161),
+                        color: const Color.fromARGB(255, 61, 83, 161),
                         width: double.infinity,
                         height: size.height * 0.3,
                         child: Image.asset('assets/images/friendship.png')),
@@ -171,7 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             color: Colors.black.withOpacity(0.15),
                             spreadRadius: 0,
                             blurRadius: 10,
-                            offset: Offset(0, 4),
+                            offset: const Offset(0, 4),
                           )
                         ],
                       ),
@@ -256,7 +256,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   backgroundColor:
-                                      Color.fromARGB(255, 61, 83, 161),
+                                      const Color.fromARGB(255, 61, 83, 161),
                                 ),
                                 child: const Text(
                                   'Register',
@@ -270,7 +270,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => LoginPage(),
+                                        builder: (context) => const LoginPage(),
                                       ),
                                     );
                                   },

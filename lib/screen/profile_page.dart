@@ -2,6 +2,8 @@ import 'package:edu_media/auth/auth_screen.dart';
 import 'package:edu_media/auth/login.dart';
 import 'package:edu_media/main.dart';
 import 'package:edu_media/screen/bottom_navigation.dart';
+import 'package:edu_media/screen/course/create_course_page.dart';
+import 'package:edu_media/screen/course/own/course_page.dart';
 import 'package:edu_media/screen/edit_profile_page.dart';
 import 'package:edu_media/setting/convert.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProfilePage extends StatefulWidget {
   final int userId;
 
-  ProfilePage({required this.userId});
+  const ProfilePage({super.key, required this.userId});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -59,11 +61,11 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () {
                 logout();
               },
-              icon: Icon(Icons.logout_rounded))
+              icon: const Icon(Icons.logout_rounded))
         ],
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Column(
                 children: [
@@ -75,12 +77,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Profile Picture
                         CircleAvatar(
                           radius: 40,
-                          backgroundImage: CachedNetworkImageProvider(
+                          /*backgroundImage: CachedNetworkImageProvider(
                             urlImg + userData?['profile_picture'] ??
                                 'https://via.placeholder.com/150',
-                          ),
+                          ),*/
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         // Stats
                         Expanded(
                           child: Column(
@@ -97,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       userData?['following_count'] ?? 0),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(userData?['bio'] ?? ''),
                             ],
                           ),
@@ -106,19 +108,25 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
 
-                  Divider(),
+                  const Divider(),
                   ElevatedButton(
                       onPressed: () {
                         editProfile();
                       },
-                      child: Text("Edit Profile")),
+                      child: const Text("Edit Profile")),
+                  ElevatedButton(
+                      onPressed: () {
+                        editCourse();
+                      },
+                      child: const Text("My Courses")),
 
                   // Posts Grid
                   GridView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: userPosts?.length ?? 0,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing: 4,
                       mainAxisSpacing: 4,
@@ -134,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
-      bottomNavigationBar: BottomNavigation(
+      bottomNavigationBar: const BottomNavigation(
         selectIn: 1,
       ),
     );
@@ -145,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         Text(
           '$count',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Text(label),
       ],
@@ -166,9 +174,27 @@ class _ProfilePageState extends State<ProfilePage> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => LoginPage(),
+            builder: (context) => const LoginPage(),
           ));
       print("null");
+    }
+  }
+
+  void editCourse() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt("user_id");
+    if (userId != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CoursePage(),
+          ));
+    } else {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginPage(),
+          ));
     }
   }
 
@@ -181,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => AuthScreen(),
+        builder: (context) => const AuthScreen(),
       ),
       (route) => false,
     );

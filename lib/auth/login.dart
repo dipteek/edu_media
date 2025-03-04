@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    final String url = '${urlM}login'; // Make sure urlM is defined
+    const String url = '${urlM}login'; // Make sure urlM is defined
 
     try {
       final response = await http.post(
@@ -52,13 +52,13 @@ class _LoginPageState extends State<LoginPage> {
         // Ensure SnackBar is shown after the current build frame
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login successful!')),
+            const SnackBar(content: Text('Login successful!')),
           );
         });
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       } else {
         final errorData = jsonDecode(response.body);
@@ -91,22 +91,22 @@ class _LoginPageState extends State<LoginPage> {
     Size size = MediaQuery.of(context).size;
 
     return _isLoading
-        ? ScreenLoading()
+        ? const ScreenLoading()
         : Scaffold(
-            backgroundColor: Color.fromARGB(255, 61, 83, 161),
+            backgroundColor: const Color.fromARGB(255, 61, 83, 161),
             appBar: AppBar(title: const Text('Login')),
             body: SingleChildScrollView(
               child: Column(
                 children: [
                   Container(
-                      color: Color.fromARGB(255, 61, 83, 161),
+                      color: const Color.fromARGB(255, 61, 83, 161),
                       width: double.infinity,
                       height: size.height * 0.3,
                       child: Image.asset('assets/images/friendship.png')),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(40),
                           topRight: Radius.circular(40)),
                       boxShadow: [
@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.black.withOpacity(0.15),
                           spreadRadius: 0,
                           blurRadius: 10,
-                          offset: Offset(0, 4),
+                          offset: const Offset(0, 4),
                         )
                       ],
                     ),
@@ -162,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: const Text('Login',
                                   style: TextStyle(fontSize: 18)),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             Center(
@@ -171,7 +171,8 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => RegisterPage(),
+                                      builder: (context) =>
+                                          const RegisterPage(),
                                     ),
                                   );
                                 },

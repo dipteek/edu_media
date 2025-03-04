@@ -41,6 +41,8 @@ dependencies:
   lottie: ^3.2.0
   shared_preferences: ^2.3.4
   cached_network_image: ^3.4.1
+  chewie: ^1.10.0
+  better_player_plus: ^1.0.8
 
 dev_dependencies:
   flutter_test:

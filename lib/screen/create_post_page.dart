@@ -9,13 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CreatePostPage extends StatefulWidget {
   final int userId;
-  const CreatePostPage({Key? key, required this.userId}) : super(key: key);
+  const CreatePostPage({super.key, required this.userId});
   @override
   _CreatePostPageState createState() => _CreatePostPageState();
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-  TextEditingController _captionController = TextEditingController();
+  final TextEditingController _captionController = TextEditingController();
   File? _image;
   bool isLoading = false;
 
@@ -35,8 +35,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       isLoading = true;
     });
     if (_image == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Please select an image')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select an image')));
       return;
     }
 
@@ -47,8 +47,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       String? token = prefs.getString('access_token');
 
       if (token == null) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Authentication required')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Authentication required')));
         return;
       }
 
@@ -91,7 +91,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('Post Uploaded'),
                 backgroundColor: Colors.greenAccent,
               ),
@@ -101,14 +101,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
       } else {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Failed to create post'),
               backgroundColor: Colors.redAccent,
             ),
           );
         });
       }
-    } catch (e) {
     } finally {
       if (mounted) {
         setState(() {
@@ -121,31 +120,31 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            appBar: AppBar(title: Text('Create Post')),
+            appBar: AppBar(title: const Text('Create Post')),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   TextField(
                     controller: _captionController,
-                    decoration: InputDecoration(labelText: 'Caption'),
+                    decoration: const InputDecoration(labelText: 'Caption'),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _image != null
                       ? Image.file(_image!)
-                      : Text('No image selected'),
+                      : const Text('No image selected'),
                   ElevatedButton(
                     onPressed: _pickImage,
-                    child: Text('Pick Image'),
+                    child: const Text('Pick Image'),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _createPost,
-                    child: Text('Create Post'),
+                    child: const Text('Create Post'),
                   ),
                 ],
               ),

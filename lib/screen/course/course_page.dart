@@ -5,6 +5,8 @@ import 'package:edu_media/setting/convert.dart';
 import 'course_detail_page.dart';
 
 class CoursePage extends StatefulWidget {
+  const CoursePage({super.key});
+
   @override
   _CoursePageState createState() => _CoursePageState();
 }
@@ -27,7 +29,7 @@ class _CoursePageState extends State<CoursePage> {
     });
 
     try {
-      final response = await http.get(Uri.parse(urlM + 'courses'));
+      final response = await http.get(Uri.parse('${urlM}courses'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -39,6 +41,7 @@ class _CoursePageState extends State<CoursePage> {
         throw Exception('Failed to load courses');
       }
     } catch (e) {
+      print(e.toString());
       setState(() {
         isLoading = false;
         isError = true;
@@ -50,42 +53,44 @@ class _CoursePageState extends State<CoursePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Courses', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Courses',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.indigo,
         elevation: 2,
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: fetchCourses,
           ),
         ],
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : isError
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, color: Colors.red, size: 50),
-                      SizedBox(height: 10),
-                      Text(
+                      const Icon(Icons.error_outline,
+                          color: Colors.red, size: 50),
+                      const SizedBox(height: 10),
+                      const Text(
                         'Failed to load courses. Please try again!',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: fetchCourses,
-                        child: Text('Retry'),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.indigo),
+                        child: Text('Retry'),
                       ),
                     ],
                   ),
                 )
               : courses.isEmpty
-                  ? Center(
+                  ? const Center(
                       child: Text(
                         'No courses available.',
                         style: TextStyle(
@@ -93,7 +98,7 @@ class _CoursePageState extends State<CoursePage> {
                       ),
                     )
                   : ListView.builder(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       itemCount: courses.length,
                       itemBuilder: (context, index) {
                         final course = courses[index];
@@ -110,12 +115,12 @@ class _CoursePageState extends State<CoursePage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0)),
                             elevation: 3,
-                            margin: EdgeInsets.symmetric(vertical: 8),
+                            margin: const EdgeInsets.symmetric(vertical: 8),
                             child: Row(
                               children: [
                                 // Course Image
                                 ClipRRect(
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(12),
                                     bottomLeft: Radius.circular(12),
                                   ),
@@ -123,7 +128,7 @@ class _CoursePageState extends State<CoursePage> {
                                     tag: 'course_${course['id']}',
                                     child: course['image'] != null
                                         ? Image.network(
-                                            urlImg + '${course['image']}',
+                                            '$urlImg${course['image']}',
                                             width: 100,
                                             height: 100,
                                             fit: BoxFit.cover,
@@ -149,7 +154,7 @@ class _CoursePageState extends State<CoursePage> {
                                       children: [
                                         Text(
                                           course['title'],
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.indigo,
@@ -157,10 +162,10 @@ class _CoursePageState extends State<CoursePage> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        SizedBox(height: 5),
+                                        const SizedBox(height: 5),
                                         Text(
                                           course['description'],
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 14,
                                               color: Colors.black87),
                                           maxLines: 2,

@@ -16,7 +16,7 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = 0;
-  Widget _currentScreen = HomeScreen();
+  final Widget _currentScreen = const HomeScreen();
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return SizedBox(
       height: 50, // Adjusted height for better visibility
       width: size.width,
       child: Column(
@@ -97,7 +97,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(),
+                builder: (context) => const HomeScreen(),
               ),
             );
             break;
@@ -113,7 +113,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(),
+                builder: (context) => const HomeScreen(),
               ),
               (route) => false,
             );
@@ -122,7 +122,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       child: Icon(
         icon,
         color: _selectedIndex == index
-            ? Color.fromARGB(255, 61, 83, 161) // Blue for selected
+            ? const Color.fromARGB(255, 61, 83, 161) // Blue for selected
             : Colors.black, // Black for others
         size: 30,
       ),
@@ -187,8 +187,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 onTap: () {
                   createPage();
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     "Create Post",
                     style: TextStyle(
@@ -207,8 +207,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     ),
                   );
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     "Create Course",
                     style: TextStyle(

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class FeedPage extends StatefulWidget {
+  const FeedPage({super.key});
+
   @override
   _FeedPageState createState() => _FeedPageState();
 }
@@ -36,16 +38,16 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Feed')),
+      appBar: AppBar(title: const Text('Feed')),
       body: FutureBuilder<List<Post>>(
         future: _posts,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No posts available'));
+            return const Center(child: Text('No posts available'));
           }
 
           return ListView.builder(

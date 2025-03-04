@@ -27,13 +27,13 @@ class _AuthScreenState extends State<AuthScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeScreen(),
+            builder: (context) => const HomeScreen(),
           ));
     } else {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => LoginPage(),
+            builder: (context) => const LoginPage(),
           ));
     }
   }
@@ -41,7 +41,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ScreenLoading(),
+      child: const ScreenLoading(),
     );
   }
 }

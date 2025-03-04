@@ -9,14 +9,13 @@ class CustomInputField extends StatefulWidget {
   final bool obscureText;
 
   const CustomInputField(
-      {Key? key,
+      {super.key,
       required this.labelText,
       required this.hintText,
       required this.validator,
       this.suffixIcon = false,
       this.isDense,
-      this.obscureText = false})
-      : super(key: key);
+      this.obscureText = false});
 
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
