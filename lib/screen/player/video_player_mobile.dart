@@ -1,16 +1,16 @@
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:flutter/material.dart';
 
-class VideoPlayerScreen extends StatefulWidget {
+class VideoPlayerMobileScreen extends StatefulWidget {
   final String videoUrl;
 
-  const VideoPlayerScreen({super.key, required this.videoUrl});
+  const VideoPlayerMobileScreen({super.key, required this.videoUrl});
 
   @override
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+class _VideoPlayerScreenState extends State<VideoPlayerMobileScreen> {
   late BetterPlayerController _betterPlayerController;
 
   @override

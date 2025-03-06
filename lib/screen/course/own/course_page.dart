@@ -137,21 +137,31 @@ class _CoursePageState extends State<CoursePage> {
                                   ),
                                   child: Hero(
                                     tag: 'course_${course['id']}',
-                                    child: course['image'] != null
-                                        ? Image.network(
-                                            '$urlImg${course['image']}',
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Container(
-                                            width: 100,
-                                            height: 100,
+                                    child: SizedBox(
+                                      width: 100,
+                                      height: 100,
+                                      child: Image.network(
+                                        '$urlImg${course['image']}',
+                                        fit: BoxFit.cover,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
                                             color: Colors.grey[300],
-                                            child: Icon(Icons.image,
+                                            child: Icon(Icons.broken_image,
                                                 size: 40,
                                                 color: Colors.grey[700]),
-                                          ),
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ),
 

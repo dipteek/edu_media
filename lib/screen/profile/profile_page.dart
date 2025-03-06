@@ -5,6 +5,7 @@ import 'package:edu_media/screen/bottom_navigation.dart';
 import 'package:edu_media/screen/course/create_course_page.dart';
 import 'package:edu_media/screen/course/own/course_page.dart';
 import 'package:edu_media/screen/edit_profile_page.dart';
+import 'package:edu_media/screen/profile/PDFViewerScreen.dart';
 import 'package:edu_media/setting/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -132,11 +133,48 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisSpacing: 4,
                     ),
                     itemBuilder: (context, index) {
-                      return CachedNetworkImage(
-                        imageUrl: urlImg + userPosts?[index]['image'] ??
-                            'https://via.placeholder.com/150',
-                        fit: BoxFit.cover,
-                      );
+                      String fileUrl =
+                          urlImg + (userPosts?[index]['file_path'] ?? '');
+
+                      // Check file extension
+                      if (fileUrl.endsWith('.jpg') ||
+                          fileUrl.endsWith('.jpeg') ||
+                          fileUrl.endsWith('.png')) {
+                        // If it's an image, show CachedNetworkImage
+                        return CachedNetworkImage(
+                          imageUrl: fileUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              const Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        );
+                      } else if (fileUrl.endsWith('.pdf')) {
+                        // If it's a PDF, show a preview button
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PDFViewerScreen(pdfUrl: fileUrl),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.picture_as_pdf,
+                                size: 50, color: Colors.red),
+                          ),
+                        );
+                      } else {
+                        // Default case (unknown file type)
+                        return Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.insert_drive_file,
+                              size: 50, color: Colors.blue),
+                        );
+                      }
                     },
                   ),
                 ],

@@ -27,55 +27,58 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    const String url = '${urlM}login'; // Make sure urlM is defined
+    const String url = '${urlM}login'; // Ensure urlM is defined
 
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {'Accept': 'application/json'},
         body: {
-          'email': _emailController.text,
-          'password': _passwordController.text,
+          'email': _emailController.text.trim(),
+          'password': _passwordController.text.trim(),
         },
       );
 
+      print("Response: ${response.body}");
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final token = data['data']['access_token'];
-        print(token);
 
-        // Save token to shared preferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('access_token', token);
-        prefs.setInt('user_id', data['data']['user']['id']);
+        if (data['data'] != null && data['data']['access_token'] != null) {
+          final token = data['data']['access_token'];
 
-        // Ensure SnackBar is shown after the current build frame
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login successful!')),
-          );
-        });
+          // Save token to shared preferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('access_token', token);
+          await prefs.setInt('user_id', data['data']['user']['id']);
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+          // Show success message
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Login successful!')),
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+          }
+        } else {
+          throw Exception("Invalid response format");
+        }
       } else {
         final errorData = jsonDecode(response.body);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorData['message'] ?? 'Login failed')),
           );
-        });
+        }
       }
     } catch (e) {
-      // Ensure SnackBar is shown in case of an error
       if (mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('An error occurred: $e')),
-          );
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('An error occurred: $e')),
+        );
       }
     } finally {
       if (mounted) {
@@ -98,11 +101,16 @@ class _LoginPageState extends State<LoginPage> {
             body: SingleChildScrollView(
               child: Column(
                 children: [
+                  // Fixed image layout issue
                   Container(
-                      color: const Color.fromARGB(255, 61, 83, 161),
-                      width: double.infinity,
-                      height: size.height * 0.3,
-                      child: Image.asset('assets/images/friendship.png')),
+                    color: const Color.fromARGB(255, 61, 83, 161),
+                    width: double.infinity,
+                    height: size.height * 0.3,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Image.asset('assets/images/friendship.png'),
+                    ),
+                  ),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -125,30 +133,39 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
-                                border: OutlineInputBorder(),
+                            // Fixed potential NaN height issue
+                            SizedBox(
+                              height: 60,
+                              child: TextFormField(
+                                controller: _emailController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  border: OutlineInputBorder(),
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) => value!.isEmpty
+                                    ? 'Please enter your email'
+                                    : null,
                               ),
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) => value!.isEmpty
-                                  ? 'Please enter your email'
-                                  : null,
                             ),
                             const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _passwordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Password',
-                                border: OutlineInputBorder(),
+
+                            SizedBox(
+                              height: 60,
+                              child: TextFormField(
+                                controller: _passwordController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Password',
+                                  border: OutlineInputBorder(),
+                                ),
+                                obscureText: true,
+                                validator: (value) => value!.isEmpty
+                                    ? 'Please enter your password'
+                                    : null,
                               ),
-                              obscureText: true,
-                              validator: (value) => value!.isEmpty
-                                  ? 'Please enter your password'
-                                  : null,
                             ),
                             const SizedBox(height: 30),
+
                             ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
@@ -162,9 +179,8 @@ class _LoginPageState extends State<LoginPage> {
                               child: const Text('Login',
                                   style: TextStyle(fontSize: 18)),
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
+                            const SizedBox(height: 20),
+
                             Center(
                               child: InkWell(
                                 onTap: () {

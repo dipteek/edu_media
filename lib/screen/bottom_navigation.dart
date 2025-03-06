@@ -2,7 +2,9 @@ import 'package:edu_media/screen/course/course_page.dart';
 import 'package:edu_media/screen/course/create_course_page.dart';
 import 'package:edu_media/screen/create_post_page.dart';
 import 'package:edu_media/screen/home_screen.dart';
-import 'package:edu_media/screen/profile_page.dart';
+import 'package:edu_media/screen/profile/profile_page.dart';
+import 'package:edu_media/screen/profile/upload_file_page.dart';
+import 'package:edu_media/screen/youtube/VideoListScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +44,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
               iconOFNavigation(Icons.add_box_outlined, 2),
               iconOFNavigation(Icons.person_outline, 1),
               iconOFNavigation(Icons.article_rounded, 3),
+              iconOFNavigation(Icons.video_call, 4),
             ],
           )
         ],
@@ -109,6 +112,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
             break;
           case 3:
             coursePage();
+          case 4:
+            getYoutube();
           default:
             Navigator.pushAndRemoveUntil(
               context,
@@ -126,6 +131,16 @@ class _BottomNavigationState extends State<BottomNavigation> {
             : Colors.black, // Black for others
         size: 30,
       ),
+    );
+  }
+
+  void getYoutube() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VideoListScreen(),
+      ),
+      (route) => false,
     );
   }
 
@@ -153,7 +168,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CreatePostPage(userId: userId),
+          builder: (context) => UploadFilePage(userId: userId),
         ),
       );
     } else {

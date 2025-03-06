@@ -4,5 +4,5 @@ import 'dart:ui';
 const primaryColor = Color.fromARGB(255, 61, 83, 161);
 const foregroundColor = Color(0xFFFF9818);
 
-const urlM = 'http://192.168.0.6:8000/api/';
-const urlImg = 'http://192.168.0.6:8000/storage/';
+const urlM = 'http://192.168.0.8:8000/api/';
+const urlImg = 'http://192.168.0.8:8000/storage/';

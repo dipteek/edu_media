@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:edu_media/setting/convert.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Add authentication support
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadVideoPage extends StatefulWidget {
   final int courseId;
@@ -19,6 +19,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   File? _video;
+  double _uploadProgress = 0.0;
 
   Future<void> _pickVideo() async {
     final pickedFile =
@@ -43,8 +44,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
       );
     }
     if (_formKey.currentState!.validate() && _video != null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('access_token'); // Get user token
+      String? token = prefs.getString('access_token');
       if (token == null) {
         Navigator.pushAndRemoveUntil(
           context,
@@ -55,27 +55,45 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
         );
       } else {
         var request = http.MultipartRequest('POST', Uri.parse('${urlM}videos'));
-        request.headers['Authorization'] = 'Bearer $token'; // Add auth header
+        request.headers['Authorization'] = 'Bearer $token';
         request.fields['course_id'] = widget.courseId.toString();
         request.fields['title'] = _titleController.text;
+        request.fields['user_id'] = userId.toString();
         request.files
             .add(await http.MultipartFile.fromPath('video', _video!.path));
-        request.fields['user_id'] = userId.toString();
 
-        var response = await request.send();
+        var streamedResponse = await request.send();
 
-        print(response.statusCode);
-        print(token);
-
-        if (response.statusCode == 201) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Video uploaded successfully!')));
-          Navigator.pop(context);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Failed to upload video')));
-          print(response.stream.bytesToString());
-        }
+        streamedResponse.stream.listen(
+          (value) {
+            setState(() {
+              _uploadProgress = value.length / streamedResponse.contentLength!;
+            });
+          },
+          onDone: () async {
+            if (streamedResponse.statusCode == 201) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Video uploaded successfully!')),
+              );
+              Navigator.pop(context);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to upload video')),
+              );
+            }
+            setState(() {
+              _uploadProgress = 0.0;
+            });
+          },
+          onError: (error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Upload error')),
+            );
+            setState(() {
+              _uploadProgress = 0.0;
+            });
+          },
+        );
       }
     }
   }
@@ -108,6 +126,14 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
                       )
                     : Text('Video Selected: ${_video!.path.split('/').last}'),
               ),
+              const SizedBox(height: 20),
+              if (_uploadProgress > 0)
+                Column(
+                  children: [
+                    LinearProgressIndicator(value: _uploadProgress),
+                    Text('${(_uploadProgress * 100).toStringAsFixed(2)}%'),
+                  ],
+                ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _uploadVideo,

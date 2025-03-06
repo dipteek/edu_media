@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:edu_media/screen/course/upload_video_page.dart';
-import 'package:edu_media/screen/video_player.dart';
+import 'package:edu_media/screen/player/video_player.dart';
+import 'package:edu_media/screen/player/video_player_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:edu_media/setting/convert.dart';
@@ -157,14 +159,26 @@ class _CourseDetailPageOwnState extends State<CourseDetailPageOwn> {
                                 onTap: () {
                                   print('$urlImg${video['video_path']}');
                                   print(" code is working");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => VideoPlayerScreen(
-                                          videoUrl:
-                                              '$urlImg${video['video_path']}'),
-                                    ),
-                                  );
+                                  if (!Platform.isAndroid) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => VideoPlayerScreen(
+                                            videoUrl:
+                                                '$urlImg${video['video_path']}'),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            VideoPlayerMobileScreen(
+                                                videoUrl:
+                                                    '$urlImg${video['video_path']}'),
+                                      ),
+                                    );
+                                  }
                                 },
                               ),
                             );
