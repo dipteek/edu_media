@@ -28,6 +28,8 @@ class _VideoListScreenState extends State<VideoListScreen> {
 
     try {
       final response = await ApiService.fetchVideos(query);
+      print("hello");
+      print(response);
       setState(() {
         videos = response.map((json) => Video.fromJson(json)).toList();
         isLoading = false;
