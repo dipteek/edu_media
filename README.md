@@ -19,29 +19,28 @@ samples, guidance on mobile development, and a full API reference.
 
 ## SCREENSHOT
 **Login**
-![Alt text](screenshot/login.png)
 <img src="screenshot/login.png" alt="drawing" style="width:200px;"/>
 
 **Home Page**
-![Alt text](screenshot/home.png)
-
+<img src="screenshot/home.png" alt="drawing" style="width:200px;"/>
 
 **Profile Page**
-![Alt text](screenshot/profile.png)
-
+<img src="screenshot/profile.png" alt="drawing" style="width:200px;"/>
 
 **Edit Profile**
-![Alt text](screenshot/edit_profile.png)
-
+<img src="screenshot/edit_profile.png" alt="drawing" style="width:200px;"/>
 
 **Course Page**
-![Alt text](screenshot/course_page.png)
+<img src="screenshot/course_page.png" alt="drawing" style="width:200px;"/>
+
 
 **Course Detail Page**
-![Alt text](screenshot/course_detail.png)
+<img src="screenshot/course_detail.png" alt="drawing" style="width:200px;"/>
+
 
 **Display only education video  of  Youtube**
-![Alt text](screenshot/youtube.png)
+<img src="screenshot/youtube.png" alt="drawing" style="width:200px;"/>
+
 
 **Create post and course**
-![Alt text](screenshot/bottom.png)
+<img src="screenshot/bottom.png" alt="drawing" style="width:200px;"/>
