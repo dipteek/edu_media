@@ -20,6 +20,7 @@ samples, guidance on mobile development, and a full API reference.
 ## SCREENSHOT
 **Login**
 ![Alt text](screenshot/login.png)
+<img src="screenshot/login.png" alt="drawing" style="width:200px;"/>
 
 **Home Page**
 ![Alt text](screenshot/home.png)
