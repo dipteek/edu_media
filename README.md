@@ -18,29 +18,29 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## SCREENSHOT
-**Login**
+<h3>Login</h3>
 <img src="screenshot/login.png" alt="drawing" style="width:200px;"/>
 
-**Home Page**
+<h3>Home Page</h3>
 <img src="screenshot/home.png" alt="drawing" style="width:200px;"/>
 
-**Profile Page**
+<h3>Profile Page</h3>
 <img src="screenshot/profile.png" alt="drawing" style="width:200px;"/>
 
-**Edit Profile**
+<h3>Edit Profile</h3>
 <img src="screenshot/edit_profile.png" alt="drawing" style="width:200px;"/>
 
-**Course Page**
+<h3>Course Page</h3>
 <img src="screenshot/course_page.png" alt="drawing" style="width:200px;"/>
 
 
-**Course Detail Page**
+<h3>Course Detail Page</h3>
 <img src="screenshot/course_detail.png" alt="drawing" style="width:200px;"/>
 
 
-**Display only education video  of  Youtube**
+<h3>Display only education video  of  Youtube</h3>
 <img src="screenshot/youtube.png" alt="drawing" style="width:200px;"/>
 
 
-**Create post and course**
+<h3>Create post and course</h3>
 <img src="screenshot/bottom.png" alt="drawing" style="width:200px;"/>
