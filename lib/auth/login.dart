@@ -54,9 +54,9 @@ class _LoginPageState extends State<LoginPage> {
 
           // Show success message
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            /*ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Login successful!')),
-            );
+            );*/
 
             Navigator.pushReplacement(
               context,
@@ -69,16 +69,16 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         final errorData = jsonDecode(response.body);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          /*ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorData['message'] ?? 'Login failed')),
-          );
+          );*/
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        /* ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('An error occurred: $e')),
-        );
+        );*/
       }
     } finally {
       if (mounted) {

@@ -78,10 +78,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Profile Picture
                         CircleAvatar(
                           radius: 40,
-                          /*backgroundImage: CachedNetworkImageProvider(
+                          backgroundImage: CachedNetworkImageProvider(
                             urlImg + userData?['profile_picture'] ??
                                 'https://via.placeholder.com/150',
-                          ),*/
+                          ),
                         ),
                         const SizedBox(width: 16),
                         // Stats

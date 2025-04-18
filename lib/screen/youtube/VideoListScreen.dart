@@ -1,3 +1,6 @@
+import 'dart:convert' show json;
+
+import 'package:edu_media/screen/bottom_navigation.dart';
 import 'package:edu_media/screen/youtube/api_service.dart';
 import 'package:edu_media/screen/youtube/video_model.dart';
 import 'package:edu_media/screen/youtube/youtube_video_player_screen.dart';
@@ -30,8 +33,27 @@ class _VideoListScreenState extends State<VideoListScreen> {
       final response = await ApiService.fetchVideos(query);
       print("hello");
       print(response);
+      List<Video> filteredVideos = response
+          .map((json) => Video.fromJson(json))
+          .where((video) =>
+              !video.title.toLowerCase().contains("Madhu") ||
+              video.description.toLowerCase().contains("Madhu Singh"))
+          .toList();
+      /*List<Video> filteredVideos = response
+          .map((json) {
+            final video = Video.fromJson(json);
+            final snippet =
+                json['snippet'] as Map<String, dynamic>?; // Ensure it's a Map
+            final categoryId =
+                snippet?['categoryId']?.toString(); // Get categoryId safely
+            return categoryId == "27" ? video : null;
+          })
+          .whereType<Video>() // Remove null values
+          .where((video) => !video.title.toLowerCase().contains("madhu singh"))
+          .toList();*/
       setState(() {
-        videos = response.map((json) => Video.fromJson(json)).toList();
+        //videos = response.map((json) => Video.fromJson(json)).toList();
+        videos = filteredVideos;
         isLoading = false;
       });
     } catch (e) {
@@ -89,6 +111,9 @@ class _VideoListScreenState extends State<VideoListScreen> {
                     );
                   },
                 ),
+      bottomNavigationBar: BottomNavigation(
+        selectIn: 4,
+      ),
     );
   }
 }

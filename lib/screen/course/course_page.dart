@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:edu_media/setting/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:edu_media/setting/convert.dart';
-import 'course_detail_page.dart';
+import 'course_detail_page.dart'; // Ensure this import is correct
 
 class CoursePage extends StatefulWidget {
   const CoursePage({super.key});
@@ -15,6 +15,10 @@ class _CoursePageState extends State<CoursePage> {
   List courses = [];
   bool isLoading = false;
   bool isError = false;
+  // final String urlM =
+  //     'http://192.168.0.10:8000/api/'; // Replace with your base URL
+  // final String urlImg =
+  //     'http://192.168.0.10:8000/storage/'; // Replace with your image base URL
 
   @override
   void initState() {
@@ -84,7 +88,7 @@ class _CoursePageState extends State<CoursePage> {
                         onPressed: fetchCourses,
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.indigo),
-                        child: Text('Retry'),
+                        child: const Text('Retry'),
                       ),
                     ],
                   ),
@@ -132,14 +136,25 @@ class _CoursePageState extends State<CoursePage> {
                                             width: 100,
                                             height: 100,
                                             fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Container(
+                                                width: 100,
+                                                height: 100,
+                                                color: Colors.grey[300],
+                                                child: const Icon(
+                                                    Icons.broken_image,
+                                                    size: 40,
+                                                    color: Colors.grey),
+                                              );
+                                            },
                                           )
                                         : Container(
                                             width: 100,
                                             height: 100,
                                             color: Colors.grey[300],
-                                            child: Icon(Icons.image,
-                                                size: 40,
-                                                color: Colors.grey[700]),
+                                            child: const Icon(Icons.image,
+                                                size: 40, color: Colors.grey),
                                           ),
                                   ),
                                 ),
